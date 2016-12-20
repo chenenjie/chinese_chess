@@ -1,0 +1,7 @@
+[package]
+name = "chinese_chess"
+version = "0.1.0"
+authors = ["enjie <chenenjie911@163.com>"]
+
+[dependencies]
+lazy_static = "*"
