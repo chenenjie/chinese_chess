@@ -18,9 +18,13 @@ impl Position {
     fn to_key(&self) -> String {
         format!("{}_{}", self.x, self.y)
     }
+
+    fn to_tuple(&self) -> (i32, i32) {
+        (self.x, self.y)
+    }
 }
 
-pub struct Chess<T : StepRule> {
+pub struct Chess<T: StepRule> {
     group: Group,
     position: Position,
     role: T,
@@ -39,5 +43,9 @@ impl<T :StepRule> Chess {
 
 pub trait StepRule {
      fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool;
+}
+
+pub fn to_key(x :i32, y: i32) -> String{
+    format!("{}_{}", x, y);
 }
 
