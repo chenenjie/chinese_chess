@@ -13,10 +13,10 @@ impl StepRule for Admiral {
                 Position {x:x, y:y} => {
 
                     //一步可走的距离
-                    result_points.push(x+1, y+1);
-                    result_points.push(x+1, y-1);
-                    result_points.push(x-1, y+1);
-                    result_points.push(x-1, y-1);
+                    result_points.push((x+1, y+1));
+                    result_points.push((x+1, y-1));
+                    result_points.push((x-1, y+1));
+                    result_points.push((x-1, y-1));
 
                     //筛选是否走出田字框
                     result_points.iter().filter(|(x, y)| {

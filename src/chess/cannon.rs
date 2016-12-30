@@ -13,7 +13,7 @@ impl StepRule for Cannon {
                 let map = get_map().lock().unwrap();
                 
                 let mut index = 0;
-                for i in x..0 {
+                for i in x-1..0 {
                     if index == 0 {
                         if let Some(chess) = map.get(to_key(i, y)){
                             index = index + 1;
@@ -30,7 +30,7 @@ impl StepRule for Cannon {
                 }
 
                 index = 0;
-                for i in x..8 {
+                for i in x+1..8 {
                     if index == 0 {
                         if let Some(chess) = map.get(to_key(i, y)){
                             index = index + 1;
@@ -47,7 +47,7 @@ impl StepRule for Cannon {
                 }
                 
                 index = 0;
-                for i in y..0 {
+                for i in y-1..0 {
                     if index == 0 {
                         if let Some(chess) = map.get(to_key(x, i)){
                             index = index + 1;
@@ -64,7 +64,7 @@ impl StepRule for Cannon {
                 }
 
                 index = 0;
-                for i in y..9 {
+                for i in y+1..9 {
                     if index == 0 {
                         if let Some(chess) = map.get(to_key(x, i)){
                             index = index + 1;
