@@ -5,7 +5,7 @@ use board::{get_map};
 struct Car;
 
 impl StepRule for Car {
-    fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool {
+     fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position, &mut board_map: BoardMap) -> bool;
         let result_points = Vec::new();
         
     

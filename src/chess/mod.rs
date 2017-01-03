@@ -1,4 +1,4 @@
-
+use board::BoardMap;
 
 pub const board_height: i32 = 10;
 pub const board_width: i32 = 9;
@@ -27,22 +27,22 @@ impl Position {
 pub struct Chess<T: StepRule> {
     group: Group,
     position: Position,
-    role: T,
+    role: Box<T>,
 }
 
-impl<T :StepRule> Chess {
-    fn new(group: Group, position: Position, role: T) -> Chess{
+impl<T :StepRule> Chess<T> {
+    fn new(group: Group, position: Position, role: T) -> Chess<T>{
         Chess {
             group: group,
             position: position,
-            role: role
+            role: Box::new(role),
         }
     }
 }
 
 
-pub trait StepRule {
-     fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool;
+pub trait StepRule: Send + Sync {
+     fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position, &mut board_map: BoardMap) -> bool;
 }
 
 pub fn to_key(x :i32, y: i32) -> String{
