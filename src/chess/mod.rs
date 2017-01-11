@@ -30,8 +30,8 @@ pub struct Chess<T: StepRule> {
     role: Box<T>,
 }
 
-impl<T :StepRule> Chess<T> {
-    fn new(group: Group, position: Position, role: T) -> Chess<T>{
+impl<T: StepRule> Chess<T> {
+    fn new(group: Group, position: Position, role: T) -> Chess<T> {
         Chess {
             group: group,
             position: position,
@@ -41,11 +41,10 @@ impl<T :StepRule> Chess<T> {
 }
 
 
-pub trait StepRule: Send + Sync {
-     fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position, &mut board_map: BoardMap) -> bool;
+pub trait StepRule {
+    fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool;
 }
 
-pub fn to_key(x :i32, y: i32) -> String{
+pub fn to_key(x: i32, y: i32) -> String {
     format!("{}_{}", x, y);
 }
-
