@@ -1,8 +1,8 @@
-use chess::{StepRule, Group, Position, to_key};
+use chess::{StepRule, Group, Position};
 use board::{get_map};
 
 
-struct Car;
+pub struct Car;
 
 impl StepRule for Car {
     fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool;
@@ -17,7 +17,7 @@ impl StepRule for Car {
                     //从中间到四周进行判断
                     if x != 0  {
                         for i in x-1..0 {
-                            if let Some(chess) = map.get(to_key(i, y)) {
+                            if let Some(chess) = map.get((i, y)) {
                                 if chess.group != side {
                                     result_points.push(i, y);
                                 }
@@ -29,7 +29,7 @@ impl StepRule for Car {
                     }
                     if x != 8 {
                         for i in x+1..8 {
-                            if let Some(chess) = map.get(to_key(i, y)){
+                            if let Some(chess) = map.get((i, y)){
                                 if chess.group != side {
                                     result_points.push(i, y);
                                 }
@@ -42,7 +42,7 @@ impl StepRule for Car {
 
                     if y != 0 {
                         for i in y-1..0{
-                            if let Some(chess) = map.get(to_key(x, i)){
+                            if let Some(chess) = map.get((x, i)){
                                 if chess.group != side {
                                     result_points.push(x, i);
                                 }
@@ -54,7 +54,7 @@ impl StepRule for Car {
 
                     if y != 9 {
                         for i in y+1..9 {
-                            if let Some(chess) = map.get(to_key(x, i)){
+                            if let Some(chess) = map.get((x, i)){
                                 if chess.group != side {
                                     result_points.push(x, i);
                                 }

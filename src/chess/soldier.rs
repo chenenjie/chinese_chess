@@ -1,7 +1,5 @@
-use chess::{StepRule, Group, to_key};
-use board::get_map;
 
-struct Soldier;
+pub struct Soldier;
 
 impl StepRule for Soldier {
     fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool;
@@ -27,7 +25,7 @@ impl StepRule for Soldier {
                 
                 //判断是否己方棋子
                 result_points.iter().filter(|(x, y)| {
-                    if let Some(chess) = map.get(to_key(x, y)){
+                    if let Some(chess) = map.get((x, y)){
                         if chess.group == side {
                             false
                         }

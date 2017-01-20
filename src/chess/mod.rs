@@ -1,4 +1,10 @@
-use board::BoardMap;
+pub mod admiral;
+pub mod cannon;
+pub mod car;
+pub mod elephant;
+pub mod guard;
+pub mod horse;
+pub mod soldier;
 
 pub const board_height: i32 = 10;
 pub const board_width: i32 = 9;
@@ -15,6 +21,12 @@ pub struct Position {
 }
 
 impl Position {
+    pub fn new(x: i32, y: i32) -> Position {
+        Position {
+            x: x,
+            y: y,
+        }
+    }
     fn to_key(&self) -> String {
         format!("{}_{}", self.x, self.y)
     }
@@ -27,15 +39,15 @@ impl Position {
 pub struct Chess<T: StepRule> {
     group: Group,
     position: Position,
-    role: Box<T>,
+    role: T,
 }
 
 impl<T: StepRule> Chess<T> {
-    fn new(group: Group, position: Position, role: T) -> Chess<T> {
+    pub fn new(group: Group, position: Position, role: T) -> Chess<T> {
         Chess {
             group: group,
             position: position,
-            role: Box::new(role),
+            role: role,
         }
     }
 }
@@ -46,9 +58,11 @@ pub trait StepRule {
 }
 
 pub trait ChessStyle{
-    fn get_self(&mut self) -> &mut Self;
+    fn get_group(&self) -> &Group;
 }
 
-pub fn to_key(x :i32, y: i32) -> String{
-    format!("{}_{}", x, y);
+impl<T: StepRule> ChessStyle for Chess<T> {
+    fn get_group(&self) -> &Group {
+        self.group    
+    }
 }

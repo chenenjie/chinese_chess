@@ -1,9 +1,8 @@
 use chess::StepRule;
 use board::get_map;
-use chess::{Chess, Position, Group, to_key};
+use chess::{Chess, Position, Group};
 
-struct Guard;
-
+pub struct Guard;
 
 impl StepRule for Guard {
     fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool;
@@ -49,7 +48,7 @@ impl StepRule for Guard {
             let map = get_map().lock().unwrap();
 
             result_points.iter().filter(|(x, y)|{
-                if let Some(chess) = map.get(to_key(x, y)) {
+                if let Some(chess) = map.get((x, y)) {
                     if side == chess.group {
                         return false
                     }
