@@ -1,17 +1,11 @@
 use std::collections::HashMap;
+use std::sync::{Mutex, Arc};
 
-use chess::{Chess, StepRule};
-
-
-
-pub struct BoardMap{
-    pub map : HashMap<String, Chess>,
+lazy_static!{
+    static ref BOARD_MAP: Arc<Mutex<HashMap<(i32, i32), Box<ChessStyle>>>> = Arc::new(Mutex::new(HashMap::new()));
 }
 
-impl BoardMap {
-    fn new() -> BoardMap{
-        BoardMap {
-            map: HashMap::new(),    
-        }
-    }
+
+pub fn get_map() -> Arc<Mutex<HashMap<(i32, i32), Box<ChessStyle>>> {
+    BOARD_MAP.clone();
 }

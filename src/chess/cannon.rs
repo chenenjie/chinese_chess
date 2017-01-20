@@ -5,7 +5,7 @@ use chess::{StepRule, get_map, to_key};
 struct Cannon;
 
 impl StepRule for Cannon {
-     fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position, &mut board_map: BoardMap) -> bool;
+     fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool;
         let result_points = Vec::new();
 
         match my_position {

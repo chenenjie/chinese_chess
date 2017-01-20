@@ -5,7 +5,7 @@ use board::{get_map};
 struct Car;
 
 impl StepRule for Car {
-     fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position, &mut board_map: BoardMap) -> bool;
+     fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool;
         let result_points = Vec::new();
         
     
@@ -13,7 +13,7 @@ impl StepRule for Car {
         {
             let map = get_map().lock().unwrap();
             match my_position {
-                Position{x:x, y:y} => {
+                Position{x:ref x, y: ref y} => {
                     //从中间到四周进行判断
                     if x != 0  {
                         for i in x-1..0 {

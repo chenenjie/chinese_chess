@@ -41,11 +41,14 @@ impl<T :StepRule> Chess<T> {
 }
 
 
-pub trait StepRule: Send + Sync {
-     fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position, &mut board_map: BoardMap) -> bool;
+pub trait StepRule {
+     fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool;
+}
+
+pub trait ChessStyle{
+    fn get_self(&mut self) -> &mut Self;
 }
 
 pub fn to_key(x :i32, y: i32) -> String{
     format!("{}_{}", x, y);
 }
-
