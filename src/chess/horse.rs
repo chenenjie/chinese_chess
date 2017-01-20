@@ -8,7 +8,7 @@ struct Horse;
 
 
 impl StepRule for Horse {
-     fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool;
+    fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool;
         //获取周围的点
         let mut result_points = Vec::new();
         match my_position {

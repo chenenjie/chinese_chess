@@ -6,7 +6,7 @@ struct Guard;
 
 
 impl StepRule for Guard {
-     fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool;
+    fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool;
         let mut result_points = Vec::new();
         
         result_points.push(3, 0);

@@ -30,8 +30,8 @@ pub struct Chess<T: StepRule> {
     role: Box<T>,
 }
 
-impl<T :StepRule> Chess<T> {
-    fn new(group: Group, position: Position, role: T) -> Chess<T>{
+impl<T: StepRule> Chess<T> {
+    fn new(group: Group, position: Position, role: T) -> Chess<T> {
         Chess {
             group: group,
             position: position,
