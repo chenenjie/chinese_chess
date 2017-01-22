@@ -5,7 +5,7 @@ use chess::{Chess, Position, Group};
 pub struct Guard;
 
 impl StepRule for Guard {
-    fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool;
+    fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool{
         let mut result_points = Vec::new();
         
         result_points.push(3, 0);
@@ -39,7 +39,7 @@ impl StepRule for Guard {
         
         //判断目标点和当前位置是否有一步的距离
         result_points.iter().filter(|(x, y)|{
-            x - my_position.x == 1 || x - my_position == -1) && (y - my_position.y == 1 || y - my_position.y == -1) 
+            (x - my_position.x == 1 || x - my_position == -1) && (y - my_position.y == 1 || y - my_position.y == -1) 
         });
 
         //判断可选目标点是否有

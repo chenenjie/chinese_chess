@@ -1,8 +1,9 @@
+use chess::{StepRule, Group, Position};
 
 pub struct Soldier;
 
 impl StepRule for Soldier {
-    fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool;
+    fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool{
         let result_points = Vec::new();
 
         match my_position {

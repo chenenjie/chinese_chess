@@ -1,16 +1,16 @@
-use chess::{StepRule, Group, Position, to_key};
+use chess::{StepRule, Group, Position};
 use board::{get_map};
 
 
 pub struct Admiral;
 
 impl StepRule for Admiral {
-    fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool;
+    fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool{
         let result_points = Vec::new();
         
         {
-            matchd my_position {
-                Position {x: ref x, y: ref y} => {
+            match my_position {
+                Position {ref x, ref y} => {
 
                     //一步可走的距离
                     result_points.push((x+1, y+1));

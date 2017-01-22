@@ -4,7 +4,7 @@ use board::{get_map};
 pub struct Elephant;
 
 impl StepRule for Elephant {
-    fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool;
+    fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool{
         let result_point = Vec::new();
         let map = get_map().lock().unwrap();
 

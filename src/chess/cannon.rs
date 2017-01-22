@@ -1,11 +1,9 @@
-use board::get_map;
-use chess::{StepRule};
-
+use chess::{StepRule, Group, Position};
 
 pub struct Cannon;
 
 impl StepRule for Cannon {
-     fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool;
+     fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool{
         let result_points = Vec::new();
 
         match my_position {
