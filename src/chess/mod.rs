@@ -9,6 +9,7 @@ pub mod soldier;
 pub const board_height: i32 = 10;
 pub const board_width: i32 = 9;
 
+#[derive(PartialEq, Eq, Hash)]
 pub enum Group {
     Black,
     Red,
@@ -36,33 +37,33 @@ impl Position {
     }
 }
 
-pub struct Chess<T: StepRule> {
+pub struct Chess {
     group: Group,
     position: Position,
-    role: T,
+    role: Box<StepRule>,
 }
 
-impl<T: StepRule> Chess<T> {
-    pub fn new(group: Group, position: Position, role: T) -> Chess<T> {
+impl Chess {
+    pub fn new<T:StepRule>(group: Group, position: Position, role: T) -> Chess {
         Chess {
             group: group,
             position: position,
-            role: role,
+            role: Box::new(role) as Box<StepRule>,
         }
     }
 }
 
 
-pub trait StepRule {
+pub trait StepRule:'static + Sync + Send{
      fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool;
 }
 
-pub trait ChessStyle{
-    fn get_group(&self) -> &Group;
-}
+//pub trait ChessStyle{
+    //fn get_group(&self) -> &Group;
+//}
 
-impl<T: StepRule> ChessStyle for Chess<T> {
-    fn get_group(&self) -> &Group {
-        self.group    
-    }
-}
+//impl<T: StepRule> ChessStyle for Chess<T> {
+    //fn get_group(&self) -> &Group {
+        //self.group    
+    //}
+//}
