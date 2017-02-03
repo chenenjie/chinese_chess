@@ -11,13 +11,57 @@ use std::collections::HashMap;
 use std::sync::{Mutex, Arc};
 
 lazy_static!{
-    static ref BOARD_MAP: Arc<Mutex<HashMap<(i32, i32), Box<Chess>>>> = Arc::new(Mutex::new(HashMap::new()));
+    static ref BOARD_MAP: Arc<Mutex<HashMap<(i32, i32), Chess>>> = Arc::new(Mutex::new(HashMap::new()));
 }
 
 
-pub fn get_map() -> Arc<Mutex<HashMap<(i32, i32), Box<Chess>>>> {
+pub fn get_map() -> Arc<Mutex<HashMap<(i32, i32), Chess>>> {
     BOARD_MAP.clone()
 }
+
+pub fn init() {
+    {
+        let arc_map = get_map();
+        let mut map = arc_map.lock().unwrap();
+        map.insert((0, 0), Chess::new(Group::Red, Position::new(0, 0), Car));
+        map.insert((8, 0), Chess::new(Group::Red, Position::new(8, 0), Car));
+        map.insert((1, 0), Chess::new(Group::Red, Position::new(1, 0), Horse));
+        map.insert((7, 0), Chess::new(Group::Red, Position::new(7, 0), Horse));
+        map.insert((2, 0), Chess::new(Group::Red, Position::new(2, 0), Elephant));
+        map.insert((6, 0), Chess::new(Group::Red, Position::new(6, 0), Elephant));
+        map.insert((3, 0), Chess::new(Group::Red, Position::new(3, 0), Guard));
+        map.insert((5, 0), Chess::new(Group::Red, Position::new(5, 0), Guard));
+        map.insert((4, 0), Chess::new(Group::Red, Position::new(4, 0), Admiral));
+
+        map.insert((1, 2), Chess::new(Group::Red, Position::new(1, 2), Cannon));
+        map.insert((7, 2), Chess::new(Group::Red, Position::new(7, 2), Cannon));
+        map.insert((0, 3), Chess::new(Group::Red, Position::new(0, 3), Soldier));
+        map.insert((2, 3), Chess::new(Group::Red, Position::new(2, 3), Soldier));
+        map.insert((4, 3), Chess::new(Group::Red, Position::new(4, 3), Soldier));
+        map.insert((6, 3), Chess::new(Group::Red, Position::new(6, 3), Soldier));
+        map.insert((8, 3), Chess::new(Group::Red, Position::new(8, 3), Soldier));
+
+        map.insert((0, 9), Chess::new(Group::Black, Position::new(0, 9), Car));
+        map.insert((8, 9), Chess::new(Group::Black, Position::new(8, 9), Car));
+        map.insert((1, 9), Chess::new(Group::Black, Position::new(1, 9), Horse));
+        map.insert((7, 9), Chess::new(Group::Black, Position::new(7, 9), Horse));
+        map.insert((2, 9), Chess::new(Group::Black, Position::new(2, 9), Elephant));
+        map.insert((6, 9), Chess::new(Group::Black, Position::new(6, 9), Elephant));
+        map.insert((3, 9), Chess::new(Group::Black, Position::new(3, 9), Guard));
+        map.insert((5, 9), Chess::new(Group::Black, Position::new(5, 9), Guard));
+        map.insert((4, 9), Chess::new(Group::Black, Position::new(4, 9), Admiral));
+
+        map.insert((1, 7), Chess::new(Group::Black, Position::new(1, 7), Cannon));
+        map.insert((7, 7), Chess::new(Group::Black, Position::new(7, 7), Cannon));
+        map.insert((0, 6), Chess::new(Group::Black, Position::new(0, 6), Soldier));
+        map.insert((2, 6), Chess::new(Group::Black, Position::new(2, 6), Soldier));
+        map.insert((4, 6), Chess::new(Group::Black, Position::new(4, 6), Soldier));
+        map.insert((6, 6), Chess::new(Group::Black, Position::new(6, 6), Soldier));
+        map.insert((8, 6), Chess::new(Group::Black, Position::new(8, 6), Soldier));
+    }
+
+}
+
 
 
 //struct BoardMap {

@@ -1,11 +1,12 @@
 use chess::StepRule;
+use std::collections::HashMap;
 use board::get_map;
 use chess::{Chess, Position, Group};
 
 pub struct Guard;
 
 impl StepRule for Guard {
-    fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool{
+    fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position, map: &HashMap<(i32, i32), Chess>) -> bool{
         let mut result_points = Vec::new();
         
         result_points.push((3, 0));
@@ -45,8 +46,8 @@ impl StepRule for Guard {
         //判断可选目标点是否有
         {
 
-            let arc_map = get_map();
-            let map = arc_map.lock().unwrap();
+            //let arc_map = get_map();
+            //let map = arc_map.lock().unwrap();
 
             result_points.iter().filter(|&&(x, y)|{
                 if let Some(chess) = map.get(&(x, y)) {

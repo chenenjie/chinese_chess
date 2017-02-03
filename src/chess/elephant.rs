@@ -1,13 +1,14 @@
-use chess::{StepRule, Group, Position};
+use chess::{Chess, StepRule, Group, Position};
+use std::collections::HashMap;
 use board::{get_map};
 
 pub struct Elephant;
 
 impl StepRule for Elephant {
-    fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool{
+    fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position, map: &HashMap<(i32, i32), Chess>) -> bool{
         let mut result_points = Vec::new();
-        let arc_map = get_map();
-        let map = arc_map.lock().unwrap();
+        //let arc_map = get_map();
+        //let map = arc_map.lock().unwrap();
 
         match *my_position {
             Position{ref x, ref y} => {

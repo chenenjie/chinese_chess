@@ -5,3 +5,5 @@ authors = ["enjie <chenenjie911@163.com>"]
 
 [dependencies]
 lazy_static = "*"
+piston_window = "0.63.0"
+find_folder = "0.3.0"

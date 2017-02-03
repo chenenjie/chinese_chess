@@ -1,11 +1,12 @@
-use chess::{StepRule, Group, Position};
+use std::collections::HashMap;
+use chess::{StepRule, Group, Position, Chess};
 use board::{get_map};
 
 
 pub struct Admiral;
 
 impl StepRule for Admiral {
-    fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool{
+    fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position, map: &HashMap<(i32, i32), Chess>) -> bool{
         let mut result_points = Vec::new();
         
         {
@@ -28,8 +29,8 @@ impl StepRule for Admiral {
                     });
 
                     //判断目标地点是否有己方
-                    let arc_map = get_map();
-                    let map = arc_map.lock().unwrap();
+                    //let arc_map = get_map();
+                    //let map = arc_map.lock().unwrap();
                     result_points.iter().filter(|&&(x, y)| {
                         if let Some(chess) = map.get(&(x, y)){
                             if *side == chess.group {

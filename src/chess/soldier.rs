@@ -1,10 +1,11 @@
-use chess::{StepRule, Group, Position};
+use chess::{StepRule, Group, Position, Chess};
+use std::collections::HashMap;
 use board::get_map;
 
 pub struct Soldier;
 
 impl StepRule for Soldier {
-    fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool{
+    fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position, map: &HashMap<(i32, i32), Chess>) -> bool{
         let mut result_points = Vec::new();
 
         match *my_position {
@@ -23,8 +24,8 @@ impl StepRule for Soldier {
                     }
                 }
 
-                let arc_map = get_map();
-                let map = arc_map.lock().unwrap();
+                //let arc_map = get_map();
+                //let map = arc_map.lock().unwrap();
                 
                 //判断是否己方棋子
                 result_points.iter().filter(|&&(x, y)| {

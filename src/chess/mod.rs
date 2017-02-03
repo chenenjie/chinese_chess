@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 pub mod admiral;
 pub mod cannon;
 pub mod car;
@@ -51,11 +53,15 @@ impl Chess {
             role: Box::new(role) as Box<StepRule>,
         }
     }
+
+    pub fn warp_get_next_step(&self, (x, y): (i32, i32), map: &HashMap<(i32, i32), Chess>) -> bool {
+        self.role.get_next_step(&self.group, &self.position, &Position::new(x, y), map)
+    }
 }
 
 
 pub trait StepRule:'static + Sync + Send{
-     fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool;
+     fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position, map: &HashMap<(i32, i32), Chess>) -> bool;
 }
 
 //pub trait ChessStyle{

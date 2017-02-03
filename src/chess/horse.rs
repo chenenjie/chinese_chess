@@ -1,4 +1,5 @@
 use chess::StepRule;
+use std::collections::HashMap;
 use board::get_map;
 use chess::{Chess, Position, Group};
 
@@ -6,14 +7,14 @@ use chess::{Chess, Position, Group};
 pub struct Horse;
 
 impl StepRule for Horse {
-    fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position) -> bool{
+    fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position, map: &HashMap<(i32, i32), Chess>) -> bool{
         //获取周围的点
         let mut result_points = Vec::new();
         match *my_position {
             Position{x, y} => {
                 //绊马脚判断
-                let arc_map = get_map();
-                let map = arc_map.lock().unwrap();
+                //let arc_map = get_map();
+                //let map = arc_map.lock().unwrap();
                 if let None = map.get(&(x+1, y)) {
                     
                     result_points.push((x+2, y+1));
