@@ -7,3 +7,5 @@ authors = ["enjie <chenenjie911@163.com>"]
 lazy_static = "*"
 piston_window = "0.63.0"
 find_folder = "0.3.0"
+piston2d-opengl_graphics = "0.39.0"
+image = "0.12.2"
