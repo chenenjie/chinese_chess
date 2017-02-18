@@ -7,6 +7,9 @@ use chess::{Chess, Position, Group};
 pub struct Horse;
 
 impl StepRule for Horse {
+    fn get_type(&self) -> i32 {
+        return 3;
+    }
     fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position, map: &HashMap<(i32, i32), Chess>) -> bool{
         //获取周围的点
         let mut result_points = Vec::new();

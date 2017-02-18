@@ -6,6 +6,9 @@ use board::{get_map};
 pub struct Car;
 
 impl StepRule for Car {
+    fn get_type(&self) -> i32 {
+        return 5;
+    }
     fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position, map: &HashMap<(i32, i32), Chess>) -> bool{
         let mut result_points = Vec::new();
     

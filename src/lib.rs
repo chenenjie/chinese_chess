@@ -12,4 +12,4 @@
 extern crate lazy_static;
 
 pub mod board;
-mod chess;
+pub mod chess;

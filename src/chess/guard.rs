@@ -6,6 +6,9 @@ use chess::{Chess, Position, Group};
 pub struct Guard;
 
 impl StepRule for Guard {
+    fn get_type(&self) -> i32 {
+        return 1;
+    }
     fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position, map: &HashMap<(i32, i32), Chess>) -> bool{
         let mut result_points = Vec::new();
         

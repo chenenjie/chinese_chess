@@ -8,6 +8,13 @@ pub mod guard;
 pub mod horse;
 pub mod soldier;
 
+pub use self::admiral::Admiral;
+pub use self::cannon::Cannon;
+pub use self::car::Car;
+pub use self::elephant::Elephant;
+pub use self::guard::Guard;
+pub use self::horse::Horse;
+pub use self::soldier::Soldier;
 pub const board_height: i32 = 10;
 pub const board_width: i32 = 9;
 
@@ -40,9 +47,9 @@ impl Position {
 }
 
 pub struct Chess {
-    group: Group,
+    pub group: Group,
     position: Position,
-    role: Box<StepRule>,
+    pub role: Box<StepRule>,
 }
 
 impl Chess {
@@ -62,6 +69,7 @@ impl Chess {
 
 pub trait StepRule:'static + Sync + Send{
      fn get_next_step(&self, side: &Group, my_position: &Position, position: &Position, map: &HashMap<(i32, i32), Chess>) -> bool;
+     fn get_type(&self) -> i32;
 }
 
 //pub trait ChessStyle{

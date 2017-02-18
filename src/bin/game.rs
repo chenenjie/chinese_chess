@@ -2,13 +2,20 @@ extern crate piston_window;
 extern crate find_folder;
 extern crate opengl_graphics;
 extern crate image as oimage;
+extern crate chinese_chess;
 
 use piston_window::{PistonWindow, OpenGL, WindowSettings, Flip, Input, Context, clear, color, image, EventLoop, polygon, Transformed};
+use piston_window::{MouseButton, Button};
+use piston_window::{MouseCursorEvent, MouseRelativeEvent};
 use opengl_graphics::{GlGraphics,TextureSettings};
 use opengl_graphics::Texture;
 use piston_window::rectangle::square;
 use oimage::{DynamicImage, RgbaImage, GenericImage};
 use std::path::Path;
+use chinese_chess::board::{get_map, init};
+use chinese_chess::chess::{Admiral, Car, Elephant, Cannon, Guard, Horse, Soldier, StepRule, Group};
+
+const CHESS_BOUND :f64 = 120f64;
 
 fn main() {
     let opengl = OpenGL::V3_2;
@@ -37,9 +44,17 @@ fn main() {
 
 
     while let Some(e) = window.next(){
+        app.refresh_point(e.mouse_cursor_args());
+        // app.refresh_point(e.mouse_relative_args());
         match e {
+            Input::Press(Button::Mouse(button)) => {
+                app.press_button(button);
+            },
+            Input::Release(Button::Mouse(button)) => {
+                app.release_button(button);
+            },
             Input::Render(args) => {
-                gl.draw(args.viewport(),|c, g| app.render(c, g))
+                gl.draw(args.viewport(),|c, g| app.render(c, g));
             }, 
             _ => {}
         }
@@ -49,39 +64,119 @@ fn main() {
 struct App{
     background : Texture,
     image: Vec<Texture>,
+    left_press : bool,
+    position : Option<(f64, f64)>,
 }
 
-const POLYGON: &'static [[f64; 2]] = &[
-    [0.0, -8.0],
-    [20.0, 0.0],
-    [0.0, 8.0]
-];
 
 impl App {
     fn render(&mut self, c: Context, g: &mut GlGraphics){
         clear(color::BLACK, g);
         image(&self.background, c.transform, g);
         // image.draw(&background, default_draw_state(), c.transform, g);
-        image(&self.image[0], c.transform.zoom(0.5), g);
+
+        // for i in 0..self.image.len() {
+        //     image(&self.image[i], c.transform.trans(x, y).zoom(0.45), g);
+        //     x += (CHESS_BOUND - 35f64);
+        // }
+        // image(&self.image[0], c.transform.trans(x, y).zoom(0.45), g);
+        // image(&self.image[0], c.transform.trans(App::to_x(5), App::to_y(4)).zoom(0.45), g);
+        {
+            let arc_map = get_map();        
+            let map = arc_map.lock().unwrap();
+            for (key, value) in map.iter(){
+                let &(x, y) = key;
+                match value.role.get_type() {
+                    i @ 0...7 =>{
+                        if value.group == Group::Black {
+                            image(&self.image[i as usize], c.transform.trans(App::to_x(x), App::to_y(y)).zoom(0.45), g);
+                        } else {
+                            image(&self.image[(i + 7) as usize], c.transform.trans(App::to_x(x), App::to_y(y)).zoom(0.45), g);
+                        }
+                    },
+                    _ => {},
+                }
+                
+            }
+
+        }
+
+
+        //when left press print the postion
+        // println!("{:?}", self.left_press);
+        // println!("position : {:?}", self.position);
+        if self.left_press == true {
+            if let Some(pos) = self.position{
+                println!("position : {:?}", pos);
+            }
+        }
     }
 
     fn new(background: Texture, origin_image: &mut RgbaImage) -> App{
+        init();
         App{
             background: background,
             image: App::splite_single_chess(origin_image),
+            left_press: false,
+            position: None,
         }        
     }
 
     fn splite_single_chess(origin_image: &mut RgbaImage) -> Vec<Texture>{
         let mut vec = vec![];
-        let mut sub_image = origin_image.sub_image(29, 61, 120, 120);
-        let (x, y) = sub_image.dimensions();
-        let (a,b,c,d) = sub_image.bounds();
+        // let (x, y) = sub_image.dimensions();
+        // let (a,b,c,d) = sub_image.bounds();
 
-        println!("x: {}, y: {}", x, y);
-        println!("a: {}, b: {}, c: {}, d: {} ", a, b, c, d);
-        vec.push(Texture::from_image(&sub_image.to_image(), &TextureSettings::new()));
+        // println!("x: {}, y: {}", x, y);
+        // println!("a: {}, b: {}, c: {}, d: {} ", a, b, c, d);
+        let mut origin_x = 29u32;
+        let mut origin_y = 61u32;
+        for i in 1..8 {
+            let mut sub_image = origin_image.sub_image(origin_x, origin_y, CHESS_BOUND as u32, CHESS_BOUND as u32);
+            vec.push(Texture::from_image(&sub_image.to_image(), &TextureSettings::new()));
+            origin_x += (CHESS_BOUND as u32);
+        }
+        origin_x = 29u32;
+        origin_y += (CHESS_BOUND as u32) * 2;
+        for i in 1..8 {
+            let mut sub_image = origin_image.sub_image(origin_x, origin_y, CHESS_BOUND as u32, CHESS_BOUND as u32);
+            vec.push(Texture::from_image(&sub_image.to_image(), &TextureSettings::new()));
+            origin_x += (CHESS_BOUND as u32);
+        }
         vec
+    }
+
+    fn press_button(&mut self, button: MouseButton) {
+        match button {
+            MouseButton::Left => {
+                self.left_press = true;
+            },
+            _ => {},
+        }
+    }
+
+    fn release_button(&mut self, button: MouseButton) {
+        match button {
+            MouseButton::Left => {
+                self.left_press = false;
+            },
+            _ => {},
+        }
+    }
+
+    fn refresh_point(&mut self, point: Option<[f64; 2]>) {
+        // println!("{:?}", point);
+        if let Some(pos) = point {
+            self.position = Some((pos[0], pos[1]));
+        }
+    }
+
+    fn to_x(x :i32) -> f64 {
+        (60 * x + 40 - 27) as f64
+    }
+
+    fn to_y(y :i32) -> f64 {
+        (582 - (60 * y) -27) as f64
     }
 }
 
