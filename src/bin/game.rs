@@ -108,6 +108,7 @@ impl App {
         if self.left_press == true {
             if let Some(pos) = self.position{
                 println!("position : {:?}", pos);
+                println!("after translate :{:?}", self.trans_position(pos));
             }
         }
     }
@@ -178,6 +179,25 @@ impl App {
     fn to_y(y :i32) -> f64 {
         (582 - (60 * y) -27) as f64
     }
+
+    fn trans_position(&self, (x, y): (f64, f64)) -> (i32, i32) {
+        let mut n = (x -40f64) / 60f64;
+        let mut m = (582f64 - y) / 60f64;
+        println!("{:?} , {:?}", n, m);
+        println!("{:?} , {:?}", (n - n.floor()), (n.floor() + 1f64 - n));
+        if n - n.floor() >= n.floor() + 1f64 - n{
+            n = n.floor() + 1f64;
+        } else {
+            n = n.floor();
+        }
+
+        if m - m.floor() >= m.floor() + 1f64 - m{
+            m = m.floor() + 1f64;
+        } else {
+            m = m.floor();
+        }
+        (n as i32, m as i32)
+    } 
 }
 
 
