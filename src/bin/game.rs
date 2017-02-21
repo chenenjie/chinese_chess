@@ -5,7 +5,7 @@ extern crate image as oimage;
 extern crate chinese_chess;
 
 use piston_window::{PistonWindow, OpenGL, WindowSettings, Flip, Input, Context, clear, color, image, EventLoop, polygon, Transformed};
-use piston_window::{MouseButton, Button};
+use piston_window::{MouseButton, Button, line};
 use piston_window::{MouseCursorEvent, MouseRelativeEvent};
 use opengl_graphics::{GlGraphics,TextureSettings};
 use opengl_graphics::Texture;
@@ -16,6 +16,12 @@ use chinese_chess::board::{get_map, init};
 use chinese_chess::chess::{Admiral, Car, Elephant, Cannon, Guard, Horse, Soldier, StepRule, Group};
 
 const CHESS_BOUND :f64 = 120f64;
+pub const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
+pub const BLUE: [f32; 4] = [0.0, 0.0, 1.0, 1.0];
+pub const ORANGE: [f32; 4] = [1.0, 0.5, 0.0, 1.0];
+pub const RED: [f32; 4] = [1.0, 0.0, 0.0, 1.0];
+pub const VIOLET: [f32; 4] = [0.6, 0.0, 1.0, 1.0];
+pub const YELLOW: [f32; 4] = [1.0, 1.0, 0.0, 1.0];
 
 fn main() {
     let opengl = OpenGL::V3_2;
@@ -65,7 +71,11 @@ struct App{
     background : Texture,
     image: Vec<Texture>,
     left_press : bool,
+    right_press : bool,
     position : Option<(f64, f64)>,
+    duration : i32, //0:xuanqi 1:xuanbu
+    // former_press : bool,
+    chosen_chess : Option<(i32, i32)>,
 }
 
 
@@ -98,19 +108,71 @@ impl App {
                 }
                 
             }
+            //选定阶段
+            if self.duration == 0 {
+                if let Some(pos) = self.position {
+                    let (x, y) = self.trans_position(pos);
+                    let left_top :(f64, f64) = (App::to_x(x), App::to_y(y));
+                    let left_bottom :(f64, f64) = (left_top.0, left_top.1 + 54f64);
+                    let right_top :(f64, f64) = (left_top.0 + 54f64, left_top.1);
+                    let right_bottom :(f64, f64) = (left_top.0 + 54f64, left_top.1 + 54f64);
 
+                    if self.left_press == false{
+                        line(RED, 1f64, [0f64, 0f64, 10f64, 0f64], c.transform.trans(left_top.0, left_top.1), g);
+                        line(RED, 1f64, [0f64, 0f64, 0f64, 10f64], c.transform.trans(left_top.0, left_top.1), g);
+                        
+                        line(RED, 1f64, [0f64, 0f64, 10f64, 0f64], c.transform.trans(left_bottom.0, left_bottom.1), g);
+                        line(RED, 1f64, [0f64, 0f64, 0f64, -10f64], c.transform.trans(left_bottom.0, left_bottom.1), g);
+
+                        line(RED, 1f64, [0f64, 0f64, -10f64, 0f64], c.transform.trans(right_top.0, right_top.1), g);
+                        line(RED, 1f64, [0f64, 0f64, 0f64, 10f64], c.transform.trans(right_top.0, right_top.1), g);
+
+                        line(RED, 1f64, [0f64, 0f64, -10f64, 0f64], c.transform.trans(right_bottom.0, right_bottom.1), g);
+                        line(RED, 1f64, [0f64, 0f64, 0f64, -10f64], c.transform.trans(right_bottom.0, right_bottom.1), g);
+                    }else {
+                        self.duration = 1;
+                        self.chosen_chess = Some((x, y));
+                        polygon(RED, &[[0f64, 0f64], [10f64, 0f64], [0f64, 10f64]], c.transform.trans(left_top.0, left_top.1), g); 
+                        polygon(RED, &[[0f64, 0f64], [10f64, 0f64], [0f64, -10f64]], c.transform.trans(left_bottom.0, left_bottom.1), g);
+                        polygon(RED, &[[0f64, 0f64], [-10f64, 0f64], [0f64, 10f64]], c.transform.trans(right_top.0, right_top.1), g);
+                        polygon(RED, &[[0f64, 0f64], [-10f64, 0f64], [0f64, -10f64]], c.transform.trans(right_bottom.0, right_bottom.1), g);
+                    }
+                } 
+            } else {
+                if let Some((x, y)) = self.chosen_chess {
+                    let left_top :(f64, f64) = (App::to_x(x), App::to_y(y));
+                    let left_bottom :(f64, f64) = (left_top.0, left_top.1 + 54f64);
+                    let right_top :(f64, f64) = (left_top.0 + 54f64, left_top.1);
+                    let right_bottom :(f64, f64) = (left_top.0 + 54f64, left_top.1 + 54f64);
+
+                    polygon(RED, &[[0f64, 0f64], [10f64, 0f64], [0f64, 10f64]], c.transform.trans(left_top.0, left_top.1), g); 
+                    polygon(RED, &[[0f64, 0f64], [10f64, 0f64], [0f64, -10f64]], c.transform.trans(left_bottom.0, left_bottom.1), g);
+                    polygon(RED, &[[0f64, 0f64], [-10f64, 0f64], [0f64, 10f64]], c.transform.trans(right_top.0, right_top.1), g);
+                    polygon(RED, &[[0f64, 0f64], [-10f64, 0f64], [0f64, -10f64]], c.transform.trans(right_bottom.0, right_bottom.1), g);
+                }
+                
+                if self.right_press == true {
+                    self.duration = 0;
+                    self.chosen_chess = None;
+                } else {
+                    if self.left_press == true {
+
+                    }
+                }
+            }
         }
 
 
         //when left press print the postion
         // println!("{:?}", self.left_press);
         // println!("position : {:?}", self.position);
-        if self.left_press == true {
-            if let Some(pos) = self.position{
-                println!("position : {:?}", pos);
-                println!("after translate :{:?}", self.trans_position(pos));
-            }
-        }
+        
+        // if self.left_press == true {
+        //     if let Some(pos) = self.position{
+        //         println!("position : {:?}", pos);
+        //         println!("after translate :{:?}", self.trans_position(pos));
+        //     }
+        // }
     }
 
     fn new(background: Texture, origin_image: &mut RgbaImage) -> App{
@@ -119,7 +181,11 @@ impl App {
             background: background,
             image: App::splite_single_chess(origin_image),
             left_press: false,
+            right_press: false,
             position: None,
+            duration: 0i32,
+            // former_press: false,
+            chosen_chess: None,
         }        
     }
 
@@ -150,7 +216,11 @@ impl App {
     fn press_button(&mut self, button: MouseButton) {
         match button {
             MouseButton::Left => {
+                // self.former_press = self.left_press;
                 self.left_press = true;
+            },
+            MouseButton::Right => {
+                self.right_press = true;
             },
             _ => {},
         }
@@ -160,6 +230,9 @@ impl App {
         match button {
             MouseButton::Left => {
                 self.left_press = false;
+            },
+            MouseButton::Right => {
+                self.right_press = false;
             },
             _ => {},
         }
@@ -183,8 +256,8 @@ impl App {
     fn trans_position(&self, (x, y): (f64, f64)) -> (i32, i32) {
         let mut n = (x -40f64) / 60f64;
         let mut m = (582f64 - y) / 60f64;
-        println!("{:?} , {:?}", n, m);
-        println!("{:?} , {:?}", (n - n.floor()), (n.floor() + 1f64 - n));
+        // println!("{:?} , {:?}", n, m);
+        // println!("{:?} , {:?}", (n - n.floor()), (n.floor() + 1f64 - n));
         if n - n.floor() >= n.floor() + 1f64 - n{
             n = n.floor() + 1f64;
         } else {
