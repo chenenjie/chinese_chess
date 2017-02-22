@@ -48,7 +48,7 @@ impl Position {
 
 pub struct Chess {
     pub group: Group,
-    position: Position,
+    pub position: Position,
     pub role: Box<StepRule>,
 }
 

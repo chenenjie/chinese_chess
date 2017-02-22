@@ -64,7 +64,6 @@ impl StepRule for Car {
                 }
             }
         }
-
         if result_points.contains(&(position.to_tuple())) {
             true
         } else {

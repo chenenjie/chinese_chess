@@ -13,7 +13,7 @@ use piston_window::rectangle::square;
 use oimage::{DynamicImage, RgbaImage, GenericImage};
 use std::path::Path;
 use chinese_chess::board::{get_map, init};
-use chinese_chess::chess::{Admiral, Car, Elephant, Cannon, Guard, Horse, Soldier, StepRule, Group};
+use chinese_chess::chess::{Position, Admiral, Car, Elephant, Cannon, Guard, Horse, Soldier, StepRule, Group};
 
 const CHESS_BOUND :f64 = 120f64;
 pub const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
@@ -76,6 +76,7 @@ struct App{
     duration : i32, //0:xuanqi 1:xuanbu
     // former_press : bool,
     chosen_chess : Option<(i32, i32)>,
+    turn : Group,
 }
 
 
@@ -93,7 +94,7 @@ impl App {
         // image(&self.image[0], c.transform.trans(App::to_x(5), App::to_y(4)).zoom(0.45), g);
         {
             let arc_map = get_map();        
-            let map = arc_map.lock().unwrap();
+            let mut map = arc_map.lock().unwrap();
             for (key, value) in map.iter(){
                 let &(x, y) = key;
                 match value.role.get_type() {
@@ -130,12 +131,14 @@ impl App {
                         line(RED, 1f64, [0f64, 0f64, -10f64, 0f64], c.transform.trans(right_bottom.0, right_bottom.1), g);
                         line(RED, 1f64, [0f64, 0f64, 0f64, -10f64], c.transform.trans(right_bottom.0, right_bottom.1), g);
                     }else {
-                        self.duration = 1;
-                        self.chosen_chess = Some((x, y));
-                        polygon(RED, &[[0f64, 0f64], [10f64, 0f64], [0f64, 10f64]], c.transform.trans(left_top.0, left_top.1), g); 
-                        polygon(RED, &[[0f64, 0f64], [10f64, 0f64], [0f64, -10f64]], c.transform.trans(left_bottom.0, left_bottom.1), g);
-                        polygon(RED, &[[0f64, 0f64], [-10f64, 0f64], [0f64, 10f64]], c.transform.trans(right_top.0, right_top.1), g);
-                        polygon(RED, &[[0f64, 0f64], [-10f64, 0f64], [0f64, -10f64]], c.transform.trans(right_bottom.0, right_bottom.1), g);
+                        if let Some(chess) = map.get(&(x, y)) {
+                            self.duration = 1;
+                            self.chosen_chess = Some((x, y));
+                            polygon(RED, &[[0f64, 0f64], [10f64, 0f64], [0f64, 10f64]], c.transform.trans(left_top.0, left_top.1), g); 
+                            polygon(RED, &[[0f64, 0f64], [10f64, 0f64], [0f64, -10f64]], c.transform.trans(left_bottom.0, left_bottom.1), g);
+                            polygon(RED, &[[0f64, 0f64], [-10f64, 0f64], [0f64, 10f64]], c.transform.trans(right_top.0, right_top.1), g);
+                            polygon(RED, &[[0f64, 0f64], [-10f64, 0f64], [0f64, -10f64]], c.transform.trans(right_bottom.0, right_bottom.1), g);
+                        }
                     }
                 } 
             } else {
@@ -156,7 +159,26 @@ impl App {
                     self.chosen_chess = None;
                 } else {
                     if self.left_press == true {
-
+                        if let Some(pos) = self.position {
+                            if let Some((x, y)) = self.chosen_chess {
+                                let po = self.trans_position((pos.0, pos.1));
+                                let mut is_modify = false;
+                                if let Some(chess) = map.get(&(x, y)) {
+                                    let is_avaiable = chess.role.get_next_step(&chess.group, &chess.position, &Position::new(po.0 as i32, po.1 as i32), &*map);
+                                    if is_avaiable == true {
+                                        is_modify = true;
+                                    }
+                                }
+                                if is_modify == true {
+                                    if let Some(mut chess) = map.remove(&(x, y)) {
+                                        chess.position = Position::new(po.0 as i32, po.1 as i32);
+                                        map.insert((po.0, po.1), chess);
+                                    };
+                                    self.duration = 0;
+                                    self.chosen_chess = None;
+                                }
+                            }
+                        } 
                     }
                 }
             }
@@ -186,6 +208,7 @@ impl App {
             duration: 0i32,
             // former_press: false,
             chosen_chess: None,
+            turn : Group::Red,
         }        
     }
 
