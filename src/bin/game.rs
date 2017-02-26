@@ -5,7 +5,7 @@ extern crate image as oimage;
 extern crate chinese_chess;
 
 use piston_window::{PistonWindow, OpenGL, WindowSettings, Flip, Input, Context, clear, color, image, EventLoop, polygon, Transformed};
-use piston_window::{MouseButton, Button, line};
+use piston_window::{MouseButton, Button, line, rectangle};
 use piston_window::{MouseCursorEvent, MouseRelativeEvent};
 use opengl_graphics::{GlGraphics,TextureSettings};
 use opengl_graphics::Texture;
@@ -81,6 +81,13 @@ struct App{
 
 
 impl App {
+    fn change_side(&mut self) {
+        if self.turn == Group::Red {
+            self.turn = Group::Black;
+        } else{
+            self.turn = Group::Red;
+        }
+    }
     fn render(&mut self, c: Context, g: &mut GlGraphics){
         clear(color::BLACK, g);
         image(&self.background, c.transform, g);
@@ -109,6 +116,13 @@ impl App {
                 }
                 
             }
+            //draw turn 
+            if self.turn == Group::Red {
+                rectangle(RED, [0f64, 0f64, 20f64, 20f64], c.transform.trans(270f64, 300f64), g);
+            } else {
+                rectangle(color::BLACK, [0f64, 0f64, 20f64, 20f64], c.transform.trans(270f64, 300f64), g);
+            }
+
             //选定阶段
             if self.duration == 0 {
                 if let Some(pos) = self.position {
@@ -131,13 +145,16 @@ impl App {
                         line(RED, 1f64, [0f64, 0f64, -10f64, 0f64], c.transform.trans(right_bottom.0, right_bottom.1), g);
                         line(RED, 1f64, [0f64, 0f64, 0f64, -10f64], c.transform.trans(right_bottom.0, right_bottom.1), g);
                     }else {
+                        println!("click postion : {:?}", pos);
                         if let Some(chess) = map.get(&(x, y)) {
-                            self.duration = 1;
-                            self.chosen_chess = Some((x, y));
-                            polygon(RED, &[[0f64, 0f64], [10f64, 0f64], [0f64, 10f64]], c.transform.trans(left_top.0, left_top.1), g); 
-                            polygon(RED, &[[0f64, 0f64], [10f64, 0f64], [0f64, -10f64]], c.transform.trans(left_bottom.0, left_bottom.1), g);
-                            polygon(RED, &[[0f64, 0f64], [-10f64, 0f64], [0f64, 10f64]], c.transform.trans(right_top.0, right_top.1), g);
-                            polygon(RED, &[[0f64, 0f64], [-10f64, 0f64], [0f64, -10f64]], c.transform.trans(right_bottom.0, right_bottom.1), g);
+                            if chess.group == self.turn {
+                                self.duration = 1;
+                                self.chosen_chess = Some((x, y));
+                                polygon(RED, &[[0f64, 0f64], [10f64, 0f64], [0f64, 10f64]], c.transform.trans(left_top.0, left_top.1), g); 
+                                polygon(RED, &[[0f64, 0f64], [10f64, 0f64], [0f64, -10f64]], c.transform.trans(left_bottom.0, left_bottom.1), g);
+                                polygon(RED, &[[0f64, 0f64], [-10f64, 0f64], [0f64, 10f64]], c.transform.trans(right_top.0, right_top.1), g);
+                                polygon(RED, &[[0f64, 0f64], [-10f64, 0f64], [0f64, -10f64]], c.transform.trans(right_bottom.0, right_bottom.1), g);
+                            }
                         }
                     }
                 } 
@@ -176,6 +193,7 @@ impl App {
                                     };
                                     self.duration = 0;
                                     self.chosen_chess = None;
+                                    self.change_side();
                                 }
                             }
                         } 
